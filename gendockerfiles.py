@@ -44,7 +44,7 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc"], debian_template, "cc7")    
+           ["gcc"], cc7_template, "cc7")    
 ]
 
 

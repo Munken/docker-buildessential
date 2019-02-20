@@ -34,6 +34,27 @@ RUN rpm --rebuilddb && yum -y install yum-plugin-ovl \
 """    
 )
 
+slc6_template = Template(
+    """FROM $dist:$tag
+
+RUN rpm --rebuilddb \
+    && yum -y install yum-plugin-ovl  \
+    && yum install -y sl-release-scl \
+    && yum install -y \
+    binutils \
+    bison \
+    cmake \
+    curl \
+    devtoolset-4-gcc-c++ \
+    flex \
+    git \
+    ncurses-devel \
+    perl-Digest-MD5 \
+    python27 \
+    && yum clean all
+"""    
+)
+
 distros = [
     Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
@@ -44,7 +65,9 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc"], cc7_template, "cc7")    
+           ["gcc"], cc7_template, "cc7"),
+    Distro("cern/slc6-base", ["latest"],
+           ["gcc"], slc6_template, "slc6"),    
 ]
 
 

@@ -27,7 +27,7 @@ RUN apt-get update -y \
 )
 
 distros = [
-    Distro("debian", ["buster", "strech", "wheezy", "jessie"],
+    Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
     Distro("munken/debian", ["etch"],
            ["gcc"], debian_template, "debian"),

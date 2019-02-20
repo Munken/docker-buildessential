@@ -26,6 +26,14 @@ RUN apt-get update -y \
 """    
 )
 
+cc7_template = Template(
+    """FROM $dist:$tag
+
+RUN rpm --rebuilddb && yum -y install yum-plugin-ovl \
+    && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 gcc-c++
+"""    
+)
+
 distros = [
     Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
@@ -34,7 +42,9 @@ distros = [
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
     Distro("daald/ubuntu32", ["trusty"],
-           ["clang", "gcc"], debian_template, "ubuntu32")
+           ["clang", "gcc"], debian_template, "ubuntu32"),
+    Distro("cern/cc7-base", ["lastest"],
+           ["gcc"], debian_template, "cc7")    
 ]
 
 

@@ -30,7 +30,7 @@ distros = [
     Distro("debian", ["buster", "strech", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
     Distro("munken/debian", ["etch"],
-           ["gcc"], debian_template, "debian")
+           ["gcc"], debian_template, "debian"),
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
     Distro("daald/ubuntu32", ["trusty"],

@@ -55,6 +55,14 @@ RUN rpm --rebuilddb \
 """    
 )
 
+opensuse_template = Template(
+    """FROM $dist:$tag
+
+RUN zypper --non-interactive install git bison flex ncurses-devel \
+      make $compiler perl which
+"""    
+)
+
 distros = [
     Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
@@ -67,7 +75,9 @@ distros = [
     Distro("cern/cc7-base", ["latest"],
            ["gcc"], cc7_template, "cc7"),
     Distro("cern/slc6-base", ["latest"],
-           ["gcc"], slc6_template, "slc6"),    
+           ["gcc"], slc6_template, "slc6"),
+    Distro("opensuse", ["latest"],
+           ["gcc-c++", "clang"], opensuse_template),    
 ]
 
 

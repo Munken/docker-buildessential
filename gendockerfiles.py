@@ -87,7 +87,7 @@ opensuse_template = Template(
     """FROM $dist:$tag
 
 RUN zypper --non-interactive install git bison flex ncurses-devel \
-      make $compiler perl which
+      make $compiler gcc-c++ gcc perl which
 """    
 )
 

@@ -23,7 +23,7 @@ for path,_ in dfiles:
     tag = base + ":" + last
     print tag
 
-    cmd = "docker build {} -t {} && docker push {1}".format(path, tag)
+    cmd = "docker build {0} -t {1} && docker push {1}".format(path, tag)
     ret = subprocess.call(cmd, shell=True)
     if ret:
         print "Failed to build and push {}".format(tag)

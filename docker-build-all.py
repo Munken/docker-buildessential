@@ -2,7 +2,8 @@
 
 import fnmatch
 import os
-import docker
+import subprocess
+import shlex
 
 def glob_recursive(d, pattern):
     matches = []
@@ -13,6 +14,7 @@ def glob_recursive(d, pattern):
 
 base = "munken/build-essential"
 dfiles = glob_recursive('.', "Dockerfile")
+failed = []
 for path,_ in dfiles:
     
     # parts = f.split('/')
@@ -21,10 +23,19 @@ for path,_ in dfiles:
     tag = base + ":" + last
     print tag
 
-    try:
-        docker.build(path=path, tag=tag)
-        docker.push(tag)
-    except:
+    cmd = "docker build {0} -t {1} && docker push {1}".format(path, tag)
+    print cmd
+    cmd = shlex.split(cmd)
+    ret = subprocess.call(cmd)
+    if ret:
         print "Failed to build and push {}".format(tag)
+        failed.append(tag)
+
+if len(failed) == 0:
+    print "All images build and pushed"
+else
+    print "These images failed:"
+    print failed
+        
     
         

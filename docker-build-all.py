@@ -33,7 +33,7 @@ for path,_ in dfiles:
 
 if len(failed) == 0:
     print "All images build and pushed"
-else
+else:
     print "These images failed:"
     print failed
         

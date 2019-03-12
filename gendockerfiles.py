@@ -58,7 +58,7 @@ cc7_template = Template(
     """FROM $dist:$tag
 
 RUN rpm --rebuilddb && yum -y install yum-plugin-ovl \
-    && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 gcc-c++
+    && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 $compiler
 """    
 )
 
@@ -106,7 +106,7 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc"], cc7_template, "cc7"),
+           ["gcc", "clang"], cc7_template, "cc7"),
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],

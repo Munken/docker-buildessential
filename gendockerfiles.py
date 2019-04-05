@@ -106,7 +106,7 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc", "clang"], cc7_template, "cc7"),
+           ["gcc-c++", "clang"], cc7_template, "cc7"),
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],

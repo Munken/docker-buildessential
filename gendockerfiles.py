@@ -53,6 +53,33 @@ RUN echo 'deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-$version main' >
         v = compiler[j+1:]
         return template.substitute(version=v, compiler=compiler)
 
+class debian_stretch_clang_template:
+
+    @staticmethod
+    def substitute(dist, tag, compiler):
+        template = Template(\
+                            """FROM debian:stretch
+
+RUN echo 'deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-$version main' >> /etc/apt/sources.list \
+        && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+        && apt-get update \
+        && apt-get install -y \
+        bc \
+        bison \
+        build-essential \
+        curl \
+        flex \
+        $compiler \
+        libncurses5-dev \
+        python-dev \
+        wget \
+        && rm -rf /var/lib/apt/lists/*
+        """)                   
+        
+        j = compiler.rfind("-")
+        v = compiler[j+1:]
+        return template.substitute(version=v, compiler=compiler)    
+
 
 cc7_template = Template(
     """FROM $dist:$tag
@@ -100,7 +127,10 @@ distros = [
            ["clang-3.6", "clang-3.7", "clang-3.8", "clang-3.9", "clang-4.0",
             "clang-5.0", "clang-6.0", "clang-7", "clang-8"
            ],
-           debian_clang_template),    
+           debian_clang_template),
+    Distro("debian", ["stretch"],
+           ["clang-4.0","clang-5.0", "clang-6.0", "clang-7", "clang-8"],
+           debian_stretch_clang_template),        
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
     Distro("daald/ubuntu32", ["trusty"],

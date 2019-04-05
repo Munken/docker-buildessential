@@ -64,7 +64,7 @@ class debian_stretch_clang_template:
     @staticmethod
     def substitute(dist, tag, compiler):
         template = Template(\
-                            """FROM debian:stretch
+                            """FROM buildpack-deps:stretch
 
 RUN echo 'deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-$version main' >> /etc/apt/sources.list \
         && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \

@@ -110,7 +110,7 @@ distros = [
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],
-           ["gcc-c++", "clang"], opensuse_template),    
+           ["gcc", "clang"], opensuse_template),    
 ]
 
 

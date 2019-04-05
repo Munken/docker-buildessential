@@ -136,7 +136,7 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc-c++", "clang"], cc7_template, "cc7"),
+           [("gcc-c++", "gcc"), "clang"], cc7_template, "cc7"),
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],
@@ -151,8 +151,15 @@ for d in distros:
     i = d.baseimage
     for t in d.tag:
         for c in d.compiler:
+
+            if isinstance(c, tuple):
+                c_name = c[0]
+                c_path = c[1]
+            else:
+                c_path = c_name = c           
+            
             image_dir = d.dir if d.dir is not None else i
-            path = "{}/{}/{}/{}".format(basedir,image_dir,t,c)
+            path = "{}/{}/{}/{}".format(basedir,image_dir,t,c_path)
             print path
             try:
                 os.makedirs(path)
@@ -160,6 +167,6 @@ for d in distros:
                 pass
             
             with open("{}/Dockerfile".format(path), "w") as f:
-                s = d.template.substitute(dist=i, tag=t, compiler=c)
+                s = d.template.substitute(dist=i, tag=t, compiler=c_name)
                 f.write(s)
             

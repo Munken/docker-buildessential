@@ -110,6 +110,8 @@ distros = [
            debian_clang_template),    
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
+    Distro("munken/docker-ubuntu", ["zesty", "artful"],
+           ["clang", "gcc"], debian_template, "ubuntu"),    
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],

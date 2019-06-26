@@ -128,7 +128,17 @@ RUN zypper --non-interactive install git bison flex ncurses-devel \
 rh_template = Template(
     """FROM $dist:$tag
 
-RUN yum install -y make gcc clang perl which
+RUN yum install -y
+    bison \
+    clang\
+    curl \    
+    flex \
+    gcc \
+    make \
+    perl \
+    perl-Digest-MD5 \
+    tar \
+    which
 """    
 )
 

@@ -92,7 +92,7 @@ cc7_template = Template(
     """FROM $dist:$tag
 
 RUN rpm --rebuilddb && yum -y install yum-plugin-ovl \
-    && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 $compiler
+    && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 gcc-c++ gcc $compiler
 """    
 )
 

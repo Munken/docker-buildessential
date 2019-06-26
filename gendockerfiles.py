@@ -91,6 +91,13 @@ RUN zypper --non-interactive install git bison flex ncurses-devel \
 """    
 )
 
+rh_template = Template(
+    """FROM $dist:$tag
+
+RUN yum install -y make gcc clang perl which
+"""    
+)
+
 distros = [
     Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
            ["clang", "gcc"], debian_template),
@@ -110,7 +117,11 @@ distros = [
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],
-           ["gcc", "clang"], opensuse_template),    
+           ["gcc", "clang"], opensuse_template),
+    Distro("centos", ["latest"],
+           ["gcc", "clang"], rh_template),
+    Distro("fedora", ["latest"],
+           ["gcc", "clang"], rh_template),    
 ]
 
 

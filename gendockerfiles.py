@@ -128,7 +128,7 @@ RUN zypper --non-interactive install git bison flex ncurses-devel \
 rh_template = Template(
     """FROM $dist:$tag
 
-RUN yum install -y
+RUN yum install -y \
     bison \
     clang\
     curl \    

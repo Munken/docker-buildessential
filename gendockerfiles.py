@@ -33,6 +33,12 @@ class debian_clang_template:
         template = Template(\
         """FROM buildpack-deps:jessie
 
+        #https://unix.stackexchange.com/a/508948
+RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
+RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
+RUN apt-get -o Acquire::Check-Valid-Until=false update
+        
 RUN echo 'deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-$version main' >> /etc/apt/sources.list \
         && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
         && apt-get update \
@@ -52,6 +58,33 @@ RUN echo 'deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-$version main' >
         j = compiler.rfind("-")
         v = compiler[j+1:]
         return template.substitute(version=v, compiler=compiler)
+
+class debian_stretch_clang_template:
+
+    @staticmethod
+    def substitute(dist, tag, compiler):
+        template = Template(\
+                            """FROM buildpack-deps:stretch
+
+RUN echo 'deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-$version main' >> /etc/apt/sources.list \
+        && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+        && apt-get update \
+        && apt-get install -y \
+        bc \
+        bison \
+        build-essential \
+        curl \
+        flex \
+        $compiler \
+        libncurses5-dev \
+        python-dev \
+        wget \
+        && rm -rf /var/lib/apt/lists/*
+        """)                   
+        
+        j = compiler.rfind("-")
+        v = compiler[j+1:]
+        return template.substitute(version=v, compiler=compiler)    
 
 
 cc7_template = Template(
@@ -107,7 +140,10 @@ distros = [
            ["clang-3.6", "clang-3.7", "clang-3.8", "clang-3.9", "clang-4.0",
             "clang-5.0", "clang-6.0", "clang-7", "clang-8"
            ],
-           debian_clang_template),    
+           debian_clang_template),
+    Distro("debian", ["stretch"],
+           ["clang-4.0","clang-5.0", "clang-6.0", "clang-7", "clang-8"],
+           debian_stretch_clang_template),        
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
     Distro("munken/docker-ubuntu", ["zesty", "artful"],
@@ -115,7 +151,7 @@ distros = [
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
-           ["gcc", "clang"], cc7_template, "cc7"),
+           [("gcc-c++", "gcc"), "clang"], cc7_template, "cc7"),
     Distro("cern/slc6-base", ["latest"],
            ["gcc"], slc6_template, "slc6"),
     Distro("opensuse", ["latest"],
@@ -134,8 +170,15 @@ for d in distros:
     i = d.baseimage
     for t in d.tag:
         for c in d.compiler:
+
+            if isinstance(c, tuple):
+                c_name = c[0]
+                c_path = c[1]
+            else:
+                c_path = c_name = c           
+            
             image_dir = d.dir if d.dir is not None else i
-            path = "{}/{}/{}/{}".format(basedir,image_dir,t,c)
+            path = "{}/{}/{}/{}".format(basedir,image_dir,t,c_path)
             print path
             try:
                 os.makedirs(path)
@@ -143,6 +186,6 @@ for d in distros:
                 pass
             
             with open("{}/Dockerfile".format(path), "w") as f:
-                s = d.template.substitute(dist=i, tag=t, compiler=c)
+                s = d.template.substitute(dist=i, tag=t, compiler=c_name)
                 f.write(s)
             

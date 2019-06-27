@@ -26,6 +26,24 @@ RUN apt-get update -y \
 """    
 )
 
+wheezy_template = Template(
+    """FROM philcryer/mheezy
+RUN echo "deb http://archive.debian.org/debian wheezy main" > /etc/apt/sources.list 
+RUN apt-get update -y \
+    && apt-get install -y \
+    bc \
+    bison \
+    build-essential \
+    curl \
+    flex \
+    $compiler \
+    libncurses5-dev \
+    python-dev \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+"""    
+)
+
 class debian_clang_template:
 
     @staticmethod
@@ -142,11 +160,14 @@ RUN yum install -y \
 """    
 )
 
+
 distros = [
-    Distro("debian", ["buster", "stretch", "wheezy", "jessie"],
+    Distro("debian", ["buster", "stretch", "jessie"],
            ["clang", "gcc"], debian_template),
     Distro("munken/debian", ["etch"],
            ["gcc"], debian_template, "debian"),
+    Distro("philcryer/min-wheezy", ["wheezy"],
+           ["gcc", "clang"], wheezy_template, "debian"),    
     Distro("debian", ["jessie"],
            ["clang-3.6", "clang-3.7", "clang-3.8", "clang-3.9", "clang-4.0",
             "clang-5.0", "clang-6.0", "clang-7", "clang-8"

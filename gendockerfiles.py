@@ -27,7 +27,7 @@ RUN apt-get update -y \
 )
 
 wheezy_template = Template(
-    """FROM philcryer/mheezy
+    """FROM philcryer/min-wheezy
 RUN echo "deb http://archive.debian.org/debian wheezy main" > /etc/apt/sources.list 
 RUN apt-get update -y \
     && apt-get install -y \

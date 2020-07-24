@@ -174,7 +174,7 @@ distros = [
     Distro("debian", ["stretch"],
            ["clang-4.0","clang-5.0", "clang-6.0", "clang-7", "clang-8"],
            debian_stretch_clang_template),
-    Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
+    Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco", "focal"],
            ["clang", "gcc"], debian_template),
     Distro("munken/docker-ubuntu", ["zesty", "artful"],
            ["clang", "gcc"], debian_template, "ubuntu"),

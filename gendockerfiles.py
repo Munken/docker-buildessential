@@ -23,12 +23,12 @@ RUN apt-get update -y \
     python-dev \
     wget \
     && rm -rf /var/lib/apt/lists/*
-"""    
+"""
 )
 
 wheezy_template = Template(
     """FROM philcryer/min-wheezy
-RUN echo "deb http://archive.debian.org/debian wheezy main" > /etc/apt/sources.list 
+RUN echo "deb http://archive.debian.org/debian wheezy main" > /etc/apt/sources.list
 RUN apt-get update -y \
     && apt-get install -y \
     bc \
@@ -41,7 +41,7 @@ RUN apt-get update -y \
     python-dev \
     wget \
     && rm -rf /var/lib/apt/lists/*
-"""    
+"""
 )
 
 class debian_clang_template:
@@ -55,9 +55,9 @@ class debian_clang_template:
 RUN echo "deb [check-valid-until=no] http://cdn-fastly.deb.debian.org/debian jessie main" > /etc/apt/sources.list.d/jessie.list
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main" > /etc/apt/sources.list.d/jessie-backports.list
 RUN sed -i '/deb http:\/\/deb.debian.org\/debian jessie-updates main/d' /etc/apt/sources.list
-RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf        
+RUN echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf
 RUN apt-get update
-        
+
 RUN echo 'deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-$version main' >> /etc/apt/sources.list \
         && wget -O - http://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
         && apt-get update \
@@ -72,8 +72,7 @@ RUN echo 'deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-$version main' >
         python-dev \
         wget \
         && rm -rf /var/lib/apt/lists/*
-        """)                   
-        
+        """)
         j = compiler.rfind("-")
         v = compiler[j+1:]
         return template.substitute(version=v, compiler=compiler)
@@ -99,11 +98,10 @@ RUN echo 'deb http://apt.llvm.org/stretch/ llvm-toolchain-stretch-$version main'
         python-dev \
         wget \
         && rm -rf /var/lib/apt/lists/*
-        """)                   
-        
+        """)
         j = compiler.rfind("-")
         v = compiler[j+1:]
-        return template.substitute(version=v, compiler=compiler)    
+        return template.substitute(version=v, compiler=compiler)
 
 
 cc7_template = Template(
@@ -111,7 +109,7 @@ cc7_template = Template(
 
 RUN rpm --rebuilddb && yum -y install yum-plugin-ovl \
     && yum install -y git bison flex ncurses-devel make perl-Digest-MD5 gcc-c++ gcc $compiler
-"""    
+"""
 )
 
 slc6_template = Template(
@@ -132,7 +130,7 @@ RUN rpm --rebuilddb \
     perl-Digest-MD5 \
     python27 \
     && yum clean all
-"""    
+"""
 )
 
 opensuse_template = Template(
@@ -140,7 +138,7 @@ opensuse_template = Template(
 
 RUN zypper --non-interactive install git bison flex ncurses-devel \
       make $compiler cpp perl which gcc gcc-c++ wget curl
-"""    
+"""
 )
 
 rh_template = Template(
@@ -149,7 +147,7 @@ rh_template = Template(
 RUN yum install -y \
     bison \
     clang\
-    curl \    
+    curl \
     flex \
     gcc \
     make \
@@ -157,7 +155,7 @@ RUN yum install -y \
     perl-Digest-MD5 \
     tar \
     which
-"""    
+"""
 )
 
 
@@ -167,7 +165,7 @@ distros = [
     Distro("munken/debian", ["etch"],
            ["gcc"], debian_template, "debian"),
     Distro("philcryer/min-wheezy", ["wheezy"],
-           ["gcc", "clang"], wheezy_template, "debian"),    
+           ["gcc", "clang"], wheezy_template, "debian"),
     Distro("debian", ["jessie"],
            ["clang-3.6", "clang-3.7", "clang-3.8", "clang-3.9", "clang-4.0",
             "clang-5.0", "clang-6.0", "clang-7", "clang-8"
@@ -175,11 +173,11 @@ distros = [
            debian_clang_template),
     Distro("debian", ["stretch"],
            ["clang-4.0","clang-5.0", "clang-6.0", "clang-7", "clang-8"],
-           debian_stretch_clang_template),        
+           debian_stretch_clang_template),
     Distro("ubuntu", ["trusty", "xenial", "bionic", "cosmic", "disco"],
            ["clang", "gcc"], debian_template),
     Distro("munken/docker-ubuntu", ["zesty", "artful"],
-           ["clang", "gcc"], debian_template, "ubuntu"),    
+           ["clang", "gcc"], debian_template, "ubuntu"),
     Distro("daald/ubuntu32", ["trusty"],
            ["clang", "gcc"], debian_template, "ubuntu32"),
     Distro("cern/cc7-base", ["latest"],
@@ -191,7 +189,7 @@ distros = [
     Distro("centos", ["latest"],
            ["gcc", "clang"], rh_template),
     Distro("fedora", ["latest"],
-           ["gcc", "clang"], rh_template),    
+           ["gcc", "clang"], rh_template),
 ]
 
 
@@ -207,8 +205,8 @@ for d in distros:
                 c_name = c[0]
                 c_path = c[1]
             else:
-                c_path = c_name = c           
-            
+                c_path = c_name = c
+
             image_dir = d.dir if d.dir is not None else i
             path = "{}/{}/{}/{}".format(basedir,image_dir,t,c_path)
             print path
@@ -216,8 +214,8 @@ for d in distros:
                 os.makedirs(path)
             except OSError:
                 pass
-            
+
             with open("{}/Dockerfile".format(path), "w") as f:
                 s = d.template.substitute(dist=i, tag=t, compiler=c_name)
                 f.write(s)
-            
+
